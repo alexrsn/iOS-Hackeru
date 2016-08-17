@@ -16,4 +16,3 @@
     let d: Double = 99.99;
     let b: Bool = true;
     
-    

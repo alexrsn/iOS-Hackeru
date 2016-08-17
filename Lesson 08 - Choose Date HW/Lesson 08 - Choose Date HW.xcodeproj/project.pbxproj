@@ -12,6 +12,8 @@
 		FAD5ACB11D573ED80007129C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5ACAF1D573ED80007129C /* Main.storyboard */; };
 		FAD5ACB31D573ED80007129C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5ACB21D573ED80007129C /* Assets.xcassets */; };
 		FAD5ACB61D573ED80007129C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5ACB41D573ED80007129C /* LaunchScreen.storyboard */; };
+		FAD5ACBE1D5765B80007129C /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5ACBD1D5765B80007129C /* Calendar.swift */; };
+		FAD5ACC01D576B8E0007129C /* DatePickerViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5ACBF1D576B8E0007129C /* DatePickerViewDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		FAD5ACB21D573ED80007129C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAD5ACB51D573ED80007129C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAD5ACB71D573ED80007129C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAD5ACBD1D5765B80007129C /* Calendar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Calendar.swift; sourceTree = "<group>"; };
+		FAD5ACBF1D576B8E0007129C /* DatePickerViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerViewDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +60,12 @@
 			children = (
 				FAD5ACAB1D573ED80007129C /* AppDelegate.swift */,
 				FAD5ACAD1D573ED80007129C /* ViewController.swift */,
+				FAD5ACBF1D576B8E0007129C /* DatePickerViewDelegate.swift */,
 				FAD5ACAF1D573ED80007129C /* Main.storyboard */,
 				FAD5ACB21D573ED80007129C /* Assets.xcassets */,
 				FAD5ACB41D573ED80007129C /* LaunchScreen.storyboard */,
 				FAD5ACB71D573ED80007129C /* Info.plist */,
+				FAD5ACBD1D5765B80007129C /* Calendar.swift */,
 			);
 			path = "Lesson 08 - Choose Date HW";
 			sourceTree = "<group>";
@@ -136,6 +142,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAD5ACAE1D573ED80007129C /* ViewController.swift in Sources */,
+				FAD5ACC01D576B8E0007129C /* DatePickerViewDelegate.swift in Sources */,
+				FAD5ACBE1D5765B80007129C /* Calendar.swift in Sources */,
 				FAD5ACAC1D573ED80007129C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +294,7 @@
 				FAD5ACBC1D573ED80007129C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
