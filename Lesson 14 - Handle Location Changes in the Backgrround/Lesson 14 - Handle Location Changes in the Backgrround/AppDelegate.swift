@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     var window: UIWindow?
     var locationManager:CLLocationManager!;
     var isInBackround = false;
-    var viewController:UIViewController?;
+    var viewController:ViewController?;
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
