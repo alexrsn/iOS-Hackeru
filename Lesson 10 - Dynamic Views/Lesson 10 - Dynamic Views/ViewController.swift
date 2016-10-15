@@ -29,17 +29,17 @@ class ViewController: UIViewController {
         
         //snap
         squareView = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 80));
-        squareView.backgroundColor = UIColor.greenColor();
+        squareView.backgroundColor = UIColor.green;
         squareView.center = view.center;
         view.addSubview(squareView);
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTap:");
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(_:)));
         view.addGestureRecognizer(tapGestureRecognizer);
         animator = UIDynamicAnimator(referenceView: view);
         let collision = UICollisionBehavior(items: [squareView]);
         collision.translatesReferenceBoundsIntoBoundary = true;
         animator.addBehavior(collision);
         
-        snapBehavior = UISnapBehavior(item: squareView, snapToPoint: view.center);
+        snapBehavior = UISnapBehavior(item: squareView, snapTo: view.center);
         animator.addBehavior(snapBehavior);
         
 
@@ -110,14 +110,14 @@ class ViewController: UIViewController {
     }
     */
     
-    func handleTap(sender: UITapGestureRecognizer) {
+    func handleTap(_ sender: UITapGestureRecognizer) {
         
         
         //snap
-        let tapPoint = sender.locationInView(view);
+        let tapPoint = sender.location(in: view);
         animator.removeBehavior(snapBehavior);
         
-        snapBehavior = UISnapBehavior(item: squareView, snapToPoint: tapPoint);
+        snapBehavior = UISnapBehavior(item: squareView, snapTo: tapPoint);
         snapBehavior.damping = 0.5;
         animator.addBehavior(snapBehavior);
         

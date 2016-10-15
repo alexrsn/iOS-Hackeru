@@ -9,8 +9,7 @@
 import UIKit
 
 
-
-class MessageViewController: UIViewController,UITableViewDataSource, UITableViewDelegate , NSURLSessionDelegate{
+class MessageViewController: UIViewController,UITableViewDataSource, UITableViewDelegate , URLSessionDelegate{
     
     
     
@@ -20,11 +19,11 @@ class MessageViewController: UIViewController,UITableViewDataSource, UITableView
     var txtMessageToSend: UITextField!;
     var btnSend: UIButton!;
     
-    var session: NSURLSession!;
-    var receivedData: NSData!;
+    var session: Foundation.URLSession!;
+    var receivedData: Data!;
     var messages: [String]!;
     let identifier = "identifier";
-    var timer:NSTimer!;
+    var timer:Timer!;
     
     var recipient:String = "";
     var userName:String = "";
@@ -34,21 +33,19 @@ class MessageViewController: UIViewController,UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor();
+        self.view.backgroundColor = UIColor.white;
         
         lblTitle = UITextView(frame: CGRect(x: 0, y: 30, width: view.frame.width, height: 30));
         
         view.addSubview(lblTitle);
         
-        btnBack = UIButton(type: .System);
+        btnBack = UIButton(type: .system);
         btnBack.frame = CGRect(x: view.frame.width - 50, y: 30, width: 50, height: 30);
-        btnBack.setTitle("Back", forState: .Normal);
-        btnBack.addTarget(self, action: "btnBack:", forControlEvents: .TouchUpInside);
+        btnBack.setTitle("Back", for: UIControlState());
+        btnBack.addTarget(self, action: #selector(MessageViewController.btnBack(_:)), for: .touchUpInside);
         view.addSubview(btnBack);
 
-        
-        CGRect(x: 0, y: 65, width: view.frame.width, height: view.frame.height - 80)
-        messagesTable = UITableView(frame: CGRect(x: 0, y: 65, width: view.frame.width, height: view.frame.height - 110), style: .Plain);
+        messagesTable = UITableView(frame: CGRect(x: 0, y: 65, width: view.frame.width, height: view.frame.height - 110), style: .plain);
         messagesTable.dataSource = self;
         messagesTable.delegate = self;
         view.addSubview(messagesTable);
@@ -57,113 +54,113 @@ class MessageViewController: UIViewController,UITableViewDataSource, UITableView
         txtMessageToSend.placeholder = "Message to send";
         view.addSubview(txtMessageToSend);
         
-        btnSend = UIButton(type: .System);
+        btnSend = UIButton(type: .system);
         btnSend.frame = CGRect(x: 205, y: messagesTable.frame.maxY, width: 100, height: 30);
-        btnSend.setTitle("Send", forState: .Normal);
-        btnSend.addTarget(self, action: "btnSend:", forControlEvents: .TouchUpInside);
+        btnSend.setTitle("Send", for: UIControlState());
+        btnSend.addTarget(self, action: #selector(MessageViewController.btnSend(_:)), for: .touchUpInside);
         view.addSubview(btnSend);
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         messages = [String]();
         getMessages();
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkForMessages:", userInfo: nil, repeats: true);
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(MessageViewController.checkForMessages(_:)), userInfo: nil, repeats: true);
         lblTitle.text = recipient;
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(identifier);
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCell(withIdentifier: identifier);
         if cell == nil{
-            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: identifier);
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifier);
             
         }
-        cell?.textLabel?.text = messages[indexPath.row] as? String;
+        cell?.textLabel?.text = messages[(indexPath as NSIndexPath).row];
         return cell!;
     }
     
-    func btnBack(sender: UIButton) {
+    func btnBack(_ sender: UIButton) {
         if timer != nil{
             timer.invalidate();
             timer = nil;
         }
-        self.dismissViewControllerAnimated(true, completion: nil);
+        self.dismiss(animated: true, completion: nil);
     }
     
-    func btnSend(sender: UIButton) {
+    func btnSend(_ sender: UIButton) {
         isSending = true;
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration();
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+        let configuration = URLSessionConfiguration.default;
         configuration.timeoutIntervalForRequest = 15.0;
         
         let dict:[NSString : AnyObject] =
             [
-                "action" : "sendMessage",
-                "userName" : "\(userName)",
-                "password" : "\(password)",
-                "recipient" : "\(self.recipient)",
-                "text" : "\(self.txtMessageToSend.text!)"
+                "action" : "sendMessage" as AnyObject,
+                "userName" : "\(userName)" as AnyObject,
+                "password" : "\(password)" as AnyObject,
+                "recipient" : "\(self.recipient)" as AnyObject,
+                "text" : "\(self.txtMessageToSend.text!)" as AnyObject
                 
         ]
         do{
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(dict, options: .PrettyPrinted);
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil);
-            let url = NSURL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
-            let request = NSMutableURLRequest(URL: url!);
-            request.HTTPMethod = "POST";
-            let task = session.uploadTaskWithRequest(request, fromData: jsonData);
+            let jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted);
+            session = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil);
+            let url = URL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
+            let request = NSMutableURLRequest(url: url!);
+            request.httpMethod = "POST";
+            let task = session.uploadTask(with: request as URLRequest, from: jsonData);
             task.resume();
         }catch{
             
         }
     }
     
-    func checkForMessages(sender: NSTimer) {
+    func checkForMessages(_ sender: Timer) {
         getMessages();
     }
     
     func getMessages(){
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration();
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+        let configuration = URLSessionConfiguration.default;
         configuration.timeoutIntervalForRequest = 15.0;
         
         let dict:[NSString : AnyObject] =
             [
-                "action" : "getMessages",
-                "userName" : "\(userName)",
-                "password" : "\(password)"
+                "action" : "getMessages" as AnyObject,
+                "userName" : "\(userName)" as AnyObject,
+                "password" : "\(password)" as AnyObject
         ]
         do{
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(dict, options: .PrettyPrinted);
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil);
-            let url = NSURL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
-            let request = NSMutableURLRequest(URL: url!);
-            request.HTTPMethod = "POST";
-            let task = session.uploadTaskWithRequest(request, fromData: jsonData);
+            let jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted);
+            session = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil);
+            let url = URL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
+            let request = NSMutableURLRequest(url: url!);
+            request.httpMethod = "POST";
+            let task = session.uploadTask(with: request as URLRequest, from: jsonData);
             task.resume();
         }catch{
             
         }
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+    func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?) {
         if error == nil{
             do{
-                let jsonObject = try NSJSONSerialization.JSONObjectWithData(receivedData, options: .AllowFragments) as! NSDictionary;
+                let jsonObject = try JSONSerialization.jsonObject(with: receivedData, options: .allowFragments) as! NSDictionary;
                 let action = jsonObject["result"] as! String;
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false;
                 if (action == "success"){
                     if !isSending{
-                        let newMessages = jsonObject["messages"] as? NSArray;
+                        let newMessages = jsonObject["messages"] as? [[String:Any]];
                         if newMessages != nil {
-                            for mes in newMessages! {
-                                messages.append("\(mes["text"] as! String) (\(mes["sender"] as! String))");
+                            for mes in newMessages!{
+                                messages.append("\(mes["text"] as! String) \(mes["sender"] as! String)");
                             }
-                            dispatch_async(dispatch_get_main_queue(), {
+                            DispatchQueue.main.async(execute: {
                                 self.messagesTable.reloadData();
                             })
                         }
@@ -182,7 +179,7 @@ class MessageViewController: UIViewController,UITableViewDataSource, UITableView
         }
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+    func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data) {
         receivedData = data;
     }
     

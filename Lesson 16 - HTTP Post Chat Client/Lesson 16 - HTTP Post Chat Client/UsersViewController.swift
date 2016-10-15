@@ -10,102 +10,101 @@ import UIKit
 
 
 
-class UsersViewController: UIViewController,UITableViewDataSource, UITableViewDelegate, NSURLSessionDelegate{
+class UsersViewController: UIViewController,UITableViewDataSource, UITableViewDelegate, URLSessionDelegate{
     
     
     
     var usersTable: UITableView!;
     
-    var session: NSURLSession!;
-    var receivedData: NSData!;
+    var session: Foundation.URLSession!;
+    var receivedData: Data!;
     
     var userName:String = "";
     var password:String = "";
     
     var users: NSArray!;
     let identifier = "identifier";
-    var timer: NSTimer!;
+    var timer: Timer!;
     var messageViewController:MessageViewController!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor();
+        self.view.backgroundColor = UIColor.white;
         
         users = NSArray();
         
-        CGRect(x: 0, y: 30, width: view.frame.width, height: view.frame.height - 30)
-        usersTable = UITableView(frame: CGRect(x: 0, y: 30, width: view.frame.width, height: view.frame.height - 30), style: .Plain);
+        usersTable = UITableView(frame: CGRect(x: 0, y: 30, width: view.frame.width, height: view.frame.height - 30), style: .plain);
         view.addSubview(usersTable);
         
         usersTable.dataSource = self;
         usersTable.delegate = self;
         getUsers();
-        timer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "updateUsers:", userInfo: nil, repeats: true);
+        timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(UsersViewController.updateUsers(_:)), userInfo: nil, repeats: true);
         
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count;
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if(self.messageViewController == nil){
             self.messageViewController = MessageViewController();
             self.messageViewController!.userName = userName;
             self.messageViewController!.password = password;
         }
-        self.messageViewController!.recipient = users[indexPath.row] as! String;
-        self.presentViewController(self.messageViewController, animated: true, completion: nil);
+        self.messageViewController!.recipient = users[(indexPath as NSIndexPath).row] as! String;
+        self.present(self.messageViewController, animated: true, completion: nil);
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(identifier);
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCell(withIdentifier: identifier);
         if cell == nil{
-            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: identifier);
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifier);
             
         }
-        cell?.textLabel?.text = users[indexPath.row] as? String;
+        cell?.textLabel?.text = users[(indexPath as NSIndexPath).row] as? String;
         return cell!;
     }
     
-    func updateUsers(sender: NSTimer){
+    func updateUsers(_ sender: Timer){
         getUsers();
     }
     
     func getUsers(){
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration();
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+        let configuration = URLSessionConfiguration.default;
         configuration.timeoutIntervalForRequest = 15.0;
         
         let dict:[NSString : AnyObject] =
             [
-                "action" : "getUsers",
-                "userName" : "\(userName)",
-                "password" : "\(password)"
+                "action" : "getUsers" as AnyObject,
+                "userName" : "\(userName)" as AnyObject,
+                "password" : "\(password)" as AnyObject
         ]
         do{
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(dict, options: .PrettyPrinted);
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil);
-            let url = NSURL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
-            let request = NSMutableURLRequest(URL: url!);
-            request.HTTPMethod = "POST";
-            let task = session.uploadTaskWithRequest(request, fromData: jsonData);
+            let jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted);
+            session = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil);
+            let url = URL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
+            let request = NSMutableURLRequest(url: url!);
+            request.httpMethod = "POST";
+            let task = session.uploadTask(with: request as URLRequest, from: jsonData);
             task.resume();
         }catch{
             
         }
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+    func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?) {
         if error == nil{
             do{
-                let jsonObject = try NSJSONSerialization.JSONObjectWithData(receivedData, options: .AllowFragments) as! NSDictionary;
+                let jsonObject = try JSONSerialization.jsonObject(with: receivedData, options: .allowFragments) as! NSDictionary;
                 let action = jsonObject["result"] as! String;
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false;
                 if (action == "success"){
                     self.users = jsonObject["users"] as! NSArray;
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         self.usersTable.reloadData();
                         
                     })
@@ -119,7 +118,7 @@ class UsersViewController: UIViewController,UITableViewDataSource, UITableViewDe
         }
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+    func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data) {
         receivedData = data;
     }
     

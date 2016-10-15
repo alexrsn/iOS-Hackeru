@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, NSURLSessionDelegate{
+class ViewController: UIViewController, URLSessionDelegate{
 
     var txtUserName: UITextField!;
     var txtPassword: UITextField!;
@@ -16,8 +16,8 @@ class ViewController: UIViewController, NSURLSessionDelegate{
     var btnSignUp: UIButton!;
     var lblMessage: UITextView!;
     
-    var session: NSURLSession!;
-    var receivedData: NSData!;
+    var session: Foundation.URLSession!;
+    var receivedData: Data!;
     var usersViewController: UsersViewController!;    
     
     override func viewDidLoad() {
@@ -26,26 +26,26 @@ class ViewController: UIViewController, NSURLSessionDelegate{
         txtUserName = UITextField(frame: CGRect(x: 0, y: 30, width: view.frame.width, height: 30));
         txtUserName.placeholder = "username";
         txtUserName.text = "Alex";
-        txtUserName.borderStyle = .RoundedRect
+        txtUserName.borderStyle = .roundedRect
         view.addSubview(txtUserName);
         
         txtPassword = UITextField(frame: CGRect(x: 0, y: 65, width: view.frame.width, height: 30));
         txtPassword.placeholder = "password";
         txtPassword.text = "1234";
-        txtPassword.secureTextEntry = true;
-        txtPassword.borderStyle = .RoundedRect
+        txtPassword.isSecureTextEntry = true;
+        txtPassword.borderStyle = .roundedRect
         view.addSubview(txtPassword);
         
-        btnSignUp = UIButton(type: .System);
+        btnSignUp = UIButton(type: .system);
         btnSignUp.frame = CGRect(x: 0, y: 100, width: view.frame.width, height: 30);
-        btnSignUp.setTitle("Sign Up", forState: .Normal);
-        btnSignUp.addTarget(self, action: "btnSignUp:", forControlEvents: .TouchUpInside);
+        btnSignUp.setTitle("Sign Up", for: UIControlState());
+        btnSignUp.addTarget(self, action: #selector(ViewController.btnSignUp(_:)), for: .touchUpInside);
         view.addSubview(btnSignUp);
         
-        btnLogin = UIButton(type: .System);
+        btnLogin = UIButton(type: .system);
         btnLogin.frame = CGRect(x: 0, y: 135, width: view.frame.width, height: 30);
-        btnLogin.setTitle("Login", forState: .Normal);
-        btnLogin.addTarget(self, action: "btnLogin:", forControlEvents: .TouchUpInside);
+        btnLogin.setTitle("Login", for: UIControlState());
+        btnLogin.addTarget(self, action: #selector(ViewController.btnLogin(_:)), for: .touchUpInside);
         view.addSubview(btnLogin);
         
         lblMessage = UITextView(frame: CGRect(x: 0, y: 170, width: view.frame.width, height: 30));
@@ -53,74 +53,74 @@ class ViewController: UIViewController, NSURLSessionDelegate{
         
     }
     
-    func btnSignUp(sender: UIButton){
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
-        self.btnLogin.enabled = false;
-        self.btnSignUp.enabled = false;
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration();
+    func btnSignUp(_ sender: UIButton){
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+        self.btnLogin.isEnabled = false;
+        self.btnSignUp.isEnabled = false;
+        let configuration = URLSessionConfiguration.default;
         configuration.timeoutIntervalForRequest = 15.0;
         
         let dict:[NSString : AnyObject] =
             [
-                "action" : "signup",
-                "userName" : "\(txtUserName.text)",
-                "password" : "\(txtPassword.text)",
+                "action" : "signup" as AnyObject,
+                "userName" : "\(txtUserName.text)" as AnyObject,
+                "password" : "\(txtPassword.text)" as AnyObject,
             ]
         do{
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(dict, options: .PrettyPrinted);
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil);
-            let url = NSURL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
-            let request = NSMutableURLRequest(URL: url!);
-            request.HTTPMethod = "POST";
-            let task = session.uploadTaskWithRequest(request, fromData: jsonData);
+            let jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted);
+            session = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil);
+            let url = URL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
+            let request = NSMutableURLRequest(url: url!);
+            request.httpMethod = "POST";
+            let task = session.uploadTask(with: request as URLRequest, from: jsonData);
             task.resume();
         }catch{
             
         }
     }
 
-    func btnLogin(sender: UIButton){
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true;
-        self.btnLogin.enabled = false;
-        self.btnSignUp.enabled = false;
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration();
+    func btnLogin(_ sender: UIButton){
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+        self.btnLogin.isEnabled = false;
+        self.btnSignUp.isEnabled = false;
+        let configuration = URLSessionConfiguration.default;
         configuration.timeoutIntervalForRequest = 15.0;
         
         let dict:[NSString : AnyObject] =
             [
-                "action" : "login",
-                "userName" : "\(txtUserName.text)",
-                "password" : "\(txtPassword.text)",
+                "action" : "login" as AnyObject,
+                "userName" : "\(txtUserName.text)" as AnyObject,
+                "password" : "\(txtPassword.text)" as AnyObject,
                 ]
         do{
-            let jsonData = try NSJSONSerialization.dataWithJSONObject(dict, options: .PrettyPrinted);
-            session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: nil);
-            let url = NSURL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
-            let request = NSMutableURLRequest(URL: url!);
-            request.HTTPMethod = "POST";
-            let task = session.uploadTaskWithRequest(request, fromData: jsonData);
+            let jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted);
+            session = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil);
+            let url = URL(string: "http://146.148.28.47/SimpleChatHttpServer/ChatServlet");
+            let request = NSMutableURLRequest(url: url!);
+            request.httpMethod = "POST";
+            let task = session.uploadTask(with: request as URLRequest, from: jsonData);
             task.resume();
         }catch{
             
         }
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+    func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?) {
         if error == nil{
             do{
-                let jsonObject = try NSJSONSerialization.JSONObjectWithData(receivedData, options: .AllowFragments) as! NSDictionary;
+                let jsonObject = try JSONSerialization.jsonObject(with: receivedData, options: .allowFragments) as! NSDictionary;
                 let action = jsonObject["result"] as! String;
-                dispatch_async(dispatch_get_main_queue(), {
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false;
-                    self.btnLogin.enabled = true;
-                    self.btnSignUp.enabled = true;
+                DispatchQueue.main.async(execute: {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false;
+                    self.btnLogin.isEnabled = true;
+                    self.btnSignUp.isEnabled = true;
                     if (action == "success"){
                         if(self.usersViewController == nil){
                             self.usersViewController = UsersViewController();
                             self.usersViewController!.userName = self.txtUserName.text!;
                             self.usersViewController!.password = self.txtPassword.text!;
                         }
-                        self.presentViewController(self.usersViewController, animated: true, completion: nil);
+                        self.present(self.usersViewController, animated: true, completion: nil);
                     }else{
                         self.lblMessage.text = "Failure";
                     }
@@ -132,7 +132,7 @@ class ViewController: UIViewController, NSURLSessionDelegate{
         }
     }
     
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+    func URLSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceiveData data: Data) {
         receivedData = data;
     }
     
