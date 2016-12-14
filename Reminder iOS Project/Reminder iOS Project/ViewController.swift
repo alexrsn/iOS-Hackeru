@@ -10,23 +10,27 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    var imgLogo: UIImageView!;
     var btnReminders: UIButton!;
     var btnSettings: UIButton!;
     var btnReportBug: UIButton!;
     var btnExit: UIButton!;
     
-    var remindersViewController: RemindersViewController!;
+    var remindersTableViewController: RemindersTableViewController!;
     var settingsViewController: SettingsViewController!;
-
-    
-    //var navigationController: UINavigationController;
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let image = UIImage(named: "reminder.png");
+        imgLogo = UIImageView(image: image!);
+        imgLogo.frame = CGRect(x: 0, y: 90, width: 100, height: 100);
+        imgLogo.center.x = view.center.x;
+        view.addSubview(imgLogo);
+        
         btnReminders = UIButton(type: .system);
-        btnReminders.frame = CGRect(x: 0, y: view.center.y - 100, width: view.frame.width, height: 50);
+        btnReminders.frame = CGRect(x: 0, y: imgLogo.frame.maxY + 50, width: view.frame.width, height: 50);
         btnReminders.setTitle("To Do Reminders", for: .normal);
         btnReminders.addTarget(self, action: #selector(goToReminders), for: .touchUpInside);
         view.addSubview(btnReminders);
@@ -42,31 +46,34 @@ class ViewController: UIViewController {
         btnReportBug.setTitle("Report Bug", for: .normal);
         btnReportBug.addTarget(self, action: #selector(reportBug), for: .touchUpInside);
         view.addSubview(btnReportBug);
+        
     }
     
     func goToReminders(sender: UIButton){
-        if(remindersViewController == nil){
-            remindersViewController = RemindersViewController();
+        if(remindersTableViewController == nil){
+            remindersTableViewController = RemindersTableViewController();
         }
-        present(remindersViewController, animated: true, completion: nil);
+        navigationController?.pushViewController(remindersTableViewController, animated: true);
     }
     
     func goToSettings(sender: UIButton){
         if(settingsViewController == nil){
             settingsViewController = SettingsViewController();
         }
-        present(settingsViewController, animated: true, completion: nil);
+        navigationController?.pushViewController(settingsViewController, animated: true);
     }
     
     func reportBug(sender: UIButton){
         
     }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
+    
 
 }
 

@@ -8,46 +8,59 @@
 
 import UIKit
 
+var reminderRepeatStrings:[String] = ["None", "Yearly", "Monthly", "Weekly", "Daily", "Hourly"];
 
 class ReminderTableViewCell: UITableViewCell {
 
     var lblTitle: UILabel!;
     var lblNote: UILabel!;
+    var imgDateIcon: UIImageView!;
     var lblDate: UILabel!;
-    var lblTime: UILabel!;
+    var imgRepeatIcon: UIImageView!
     var lblRepeat: UILabel!;
     var callButton: UIButton!;
-    var deleteButton: UIButton!;
+    var phoneNum: String!;
     
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier);
-        contentView.backgroundColor = UIColor.blue;
-        
-        lblTitle = UILabel(frame: CGRect(x: 0, y: 0, width: contentView.frame.width / 2, height: 20));
-        lblTitle.text = "Title:";
+                
+        lblTitle = UILabel(frame: CGRect(x: 0, y: 0, width: contentView.frame.width, height: 20));
         contentView.addSubview(lblTitle);
         
-        lblNote = UILabel(frame: CGRect(x: 0, y: lblTitle.frame.maxY, width: contentView.frame.width / 2, height: 20));
-        lblNote.text = "Note:";
+        lblNote = UILabel(frame: CGRect(x: 0, y: lblTitle.frame.maxY, width: contentView.frame.width, height: 20));
         contentView.addSubview(lblNote);
         
-        lblDate = UILabel(frame: CGRect(x: 0, y: lblNote.frame.maxY, width: 60, height: 20));
-        lblDate.text = "Date:";
+        let imgDateIconName = UIImage(named: "date");
+        imgDateIcon = UIImageView(image: imgDateIconName);
+        imgDateIcon.frame = CGRect(x: 0, y: lblNote.frame.maxY, width: 20, height: 20);
+        contentView.addSubview(imgDateIcon);
+        
+        lblDate = UILabel(frame: CGRect(x: imgDateIcon.frame.maxX, y: lblNote.frame.maxY, width: 150, height: 20));
         contentView.addSubview(lblDate);
         
-        lblTime = UILabel(frame: CGRect(x: lblDate.frame.maxX, y: lblNote.frame.maxY, width: 60, height: 20));
-        lblTime.text = "Time:";
-        contentView.addSubview(lblTime);
+        let imgRepeatIconName = UIImage(named: "repeat");
+        imgRepeatIcon = UIImageView(image: imgRepeatIconName);
+        imgRepeatIcon.frame = CGRect(x: lblDate.frame.maxX, y: lblNote.frame.maxY, width: 20, height: 20);
+        contentView.addSubview(imgRepeatIcon);
         
-        lblRepeat = UILabel(frame: CGRect(x: lblTime.frame.maxX, y: lblNote.frame.maxY, width: 60, height: 20));
-        lblRepeat.text = "Repeat:";
+        lblRepeat = UILabel(frame: CGRect(x: imgRepeatIcon.frame.maxX, y: lblNote.frame.maxY, width: 100, height: 20));
         contentView.addSubview(lblRepeat);
-                
         
-        //        contentView.addSubview(callButton);
-        //        contentView.addSubview(deleteButton);
+        callButton = UIButton(type: .system);
+        callButton.frame = CGRect(x: contentView.frame.maxX - callButton.frame.width - 40, y: lblNote.frame.maxY, width: 30, height: 20);
+        callButton.setTitle("Call", for: .normal);
+        callButton.addTarget(self, action: #selector(callNumber), for: .touchUpInside);
 
+        contentView.addSubview(callButton);
+        
+    }
+    
+    func callNumber(sender: UIButton) {
+        if let url = URL(string: "tel://\(phoneNum!)") {
+            print("calling \(url)");
+            UIApplication.shared.open(url, options: [:], completionHandler: nil);
+        }
     }
     
     required init(coder aDecoder: NSCoder) {
