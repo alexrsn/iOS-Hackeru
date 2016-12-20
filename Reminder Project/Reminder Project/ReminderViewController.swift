@@ -107,11 +107,10 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
         }
         
         guard let managedObjectContext = managedObjectContext else { return false }
-        // Create Quote
         if reminder == nil{
             reminder = Reminder(context: managedObjectContext);
         }
-        if (reminder) != nil{
+        if let reminder = reminder{
             reminder.title = txtTitle.text!;
             reminder.note = txtNote.text!;
             reminder.phoneNumber = txtPhone.text!;

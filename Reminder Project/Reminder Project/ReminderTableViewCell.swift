@@ -52,7 +52,6 @@ class ReminderTableViewCell: UITableViewCell {
         callButton.frame = CGRect(x: contentView.frame.maxX - callButton.frame.width - 40, y: lblNote.frame.maxY, width: 30, height: 20);
         callButton.setTitle("Call", for: .normal);
         callButton.addTarget(self, action: #selector(callNumber), for: .touchUpInside);
-
         contentView.addSubview(callButton);
         
     }

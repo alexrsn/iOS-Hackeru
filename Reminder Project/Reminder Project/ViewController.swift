@@ -19,8 +19,6 @@ class ViewController: UIViewController {
     var remindersTableViewController: RemindersTableViewController!;
     var settingsViewController: SettingsViewController!;
     
-    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext;
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -68,13 +66,8 @@ class ViewController: UIViewController {
         
     }
     
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
-    
 }
-
