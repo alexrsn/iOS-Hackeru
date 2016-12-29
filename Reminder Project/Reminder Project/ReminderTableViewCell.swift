@@ -1,8 +1,8 @@
 //
 //  ReminderTableViewCell.swift
-//  Reminder iOS Project
+//  Reminder Project
 //
-//  Created by Alex on 14/10/2016.
+//  Created by Alex on 10/10/2016.
 //  Copyright © 2016 Alex. All rights reserved.
 //
 
@@ -29,7 +29,8 @@ class ReminderTableViewCell: UITableViewCell {
         lblTitle = UILabel(frame: CGRect(x: 0, y: 0, width: contentView.frame.width, height: 20));
         contentView.addSubview(lblTitle);
         
-        lblNote = UILabel(frame: CGRect(x: 0, y: lblTitle.frame.maxY, width: contentView.frame.width, height: 20));
+        lblNote = UILabel(frame: CGRect(x: 0, y: lblTitle.frame.maxY, width: contentView.frame.width, height: 50));
+        lblNote.numberOfLines = 2;
         contentView.addSubview(lblNote);
         
         let imgDateIconName = UIImage(named: "date");
@@ -53,24 +54,20 @@ class ReminderTableViewCell: UITableViewCell {
         callButton.setTitle("Call", for: .normal);
         callButton.addTarget(self, action: #selector(callNumber), for: .touchUpInside);
         contentView.addSubview(callButton);
-        
     }
     
     func callNumber(sender: UIButton) {
         if let url = URL(string: "tel://\(phoneNum!)") {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil);
+            } else {
+                UIApplication.shared.openURL(url);
+            }
             print("calling \(url)");
-            UIApplication.shared.open(url, options: [:], completionHandler: nil);
         }
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
 }

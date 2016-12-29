@@ -1,6 +1,6 @@
 //
 //  AddNewReminderViewController.swift
-//  Reminder iOS Project
+//  Reminder Project
 //
 //  Created by Alex on 10/10/2016.
 //  Copyright © 2016 Alex. All rights reserved.
@@ -21,11 +21,10 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     var timePicker:UIDatePicker!;
     var imgRepeatIcon:UIImageView!;
     var repeatPicker:UIPickerView!;
+    var btnSave:UIButton!;
     
     var managedObjectContext: NSManagedObjectContext?;
     var reminder:Reminder!;
-    var btnSave:UIButton!;
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +90,8 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     
     func btnSaveClicked(sender: UIButton) {
         if saveReminder() {
-            //dismiss(animated: true, completion: nil);
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate;
+            appDelegate.setNotifications();
             _ = navigationController?.popViewController(animated: true);
         }
         
@@ -100,9 +100,9 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     func saveReminder() -> Bool {
         // Validation of required fields
         if txtTitle.text!.isEmpty {
-            let alert = UIAlertController(title: "Validation error", message: "Please enter title!", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: "Validation error", message: "Please enter title!", preferredStyle: .alert);
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil));
+            self.present(alert, animated: true, completion: nil);
             return false;
         }
         
@@ -113,8 +113,11 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
         if let reminder = reminder{
             reminder.title = txtTitle.text!;
             reminder.note = txtNote.text!;
-            reminder.phoneNumber = txtPhone.text!;
-            reminder.date = datePicker.date as NSDate?;
+            let trimmedPhoneNumber = txtPhone.text!.components(separatedBy: CharacterSet.decimalDigits.inverted)
+                .joined(separator: "");
+            reminder.phoneNumber = trimmedPhoneNumber;
+            let timeInterval = floor(datePicker.date .timeIntervalSinceReferenceDate / 60.0) * 60.0
+            reminder.date = NSDate(timeIntervalSinceReferenceDate: timeInterval);
             reminder.rep = Int16(repeatPicker.selectedRow(inComponent: 0));
         }
         do{
@@ -123,7 +126,7 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
             print(error);
             return false;
         }
-        return true
+        return true;
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -131,7 +134,7 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
             let newCharacters = CharacterSet(charactersIn: string)
             let boolIsNumber = CharacterSet.decimalDigits.isSuperset(of: newCharacters);
             if boolIsNumber == true {
-                return true
+                return true;
             }else{
                 return false;
             }
@@ -154,7 +157,7 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
         case 1:
             return "Yearly";
         case 2:
-            return "Montly"
+            return "Montly";
         case 3:
             return "Weekly";
         case 4:
@@ -166,12 +169,8 @@ class ReminderViewController: UIViewController,UIPickerViewDataSource, UIPickerV
         }
     }
     
-    
     override  func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 }
-
-

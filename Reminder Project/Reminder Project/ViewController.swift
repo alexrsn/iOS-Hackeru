@@ -1,26 +1,28 @@
 //
 //  ViewController.swift
-//  Reminder iOS Project
+//  Reminder Project
 //
 //  Created by Alex on 10/10/2016.
 //  Copyright © 2016 Alex. All rights reserved.
 //
 
 import UIKit
+import Contacts
+import CoreData
 
 class ViewController: UIViewController {
     
     var imgLogo: UIImageView!;
     var btnReminders: UIButton!;
-    var btnSettings: UIButton!;
+    var btnImportBirthdays: UIButton!;
     var btnReportBug: UIButton!;
-    var btnExit: UIButton!;
     
     var remindersTableViewController: RemindersTableViewController!;
-    var settingsViewController: SettingsViewController!;
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate;
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad();
         
         let image = UIImage(named: "reminder.png");
         imgLogo = UIImageView(image: image!);
@@ -34,18 +36,17 @@ class ViewController: UIViewController {
         btnReminders.addTarget(self, action: #selector(goToReminders), for: .touchUpInside);
         view.addSubview(btnReminders);
         
-        btnSettings = UIButton(type: .system);
-        btnSettings.frame = CGRect(x: 0, y: btnReminders.frame.maxY, width: view.frame.width, height: 50);
-        btnSettings.setTitle("Settings", for: .normal);
-        btnSettings.addTarget(self, action: #selector(goToSettings), for: .touchUpInside);
-        view.addSubview(btnSettings);
+        btnImportBirthdays = UIButton(type: .system);
+        btnImportBirthdays.frame = CGRect(x: 0, y: btnReminders.frame.maxY, width: view.frame.width, height: 50);
+        btnImportBirthdays.setTitle("Import Contacts Birthdays", for: .normal);
+        btnImportBirthdays.addTarget(self, action: #selector(importBirthdays), for: .touchUpInside);
+        view.addSubview(btnImportBirthdays);
         
         btnReportBug = UIButton(type: .system);
-        btnReportBug.frame = CGRect(x: 0, y: btnSettings.frame.maxY, width: view.frame.width, height: 50);
+        btnReportBug.frame = CGRect(x: 0, y: btnImportBirthdays.frame.maxY, width: view.frame.width, height: 50);
         btnReportBug.setTitle("Report Bug", for: .normal);
         btnReportBug.addTarget(self, action: #selector(reportBug), for: .touchUpInside);
         view.addSubview(btnReportBug);
-        
     }
     
     func goToReminders(sender: UIButton){
@@ -55,16 +56,76 @@ class ViewController: UIViewController {
         navigationController?.pushViewController(remindersTableViewController, animated: true);
     }
     
-    func goToSettings(sender: UIButton){
-        if(settingsViewController == nil){
-            settingsViewController = SettingsViewController();
+    func importBirthdays(sender: UIButton){
+        let alertController = UIAlertController(title: "Import Birthdays", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert);
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
+        let importAction = UIAlertAction(title: "Import", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+            let year =  NSCalendar.current.component(Calendar.Component.year, from: Date());
+            for contact in self.contacts{
+                print(contact.givenName);
+                print(contact.familyName);
+                print(contact.phoneNumbers.first!.value.stringValue);
+                if(contact.birthday != nil){
+                    var birthday = contact.birthday!;
+                    birthday.year = year;
+                    birthday.hour = 10;
+                    if(birthday.date!.timeIntervalSinceNow < 0){
+                        birthday.year! += 1;
+                    }
+                    let reminder = Reminder(context: self.appDelegate.persistentContainer.viewContext);
+                    reminder.title = "\(contact.givenName) \(contact.familyName) Birthday";
+                    reminder.note = "Don't forget to wish a Happy Birthday!!!";
+                    let trimmedPhoneNumber = contact.phoneNumbers.first!.value.stringValue.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: "");
+                    reminder.phoneNumber = trimmedPhoneNumber;
+                    reminder.date = birthday.date as NSDate?;
+                    reminder.rep = 1;
+                }
+                do{
+                    try self.appDelegate.persistentContainer.viewContext.save();
+                }catch{
+                    print(error);
+                }
+            }
+            self.goToReminders(sender: sender);
         }
-        navigationController?.pushViewController(settingsViewController, animated: true);
+        alertController.addAction(cancelAction);
+        alertController.addAction(importAction);
+        self.present(alertController, animated: true, completion: nil);
     }
     
     func reportBug(sender: UIButton){
-        
+        let email = "support@reminder.com";
+        if let url = URL(string: "mailto:\(email)"){
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil);
+            } else {
+                UIApplication.shared.openURL(url);
+            }
+        }
     }
+    
+    lazy var contacts: [CNContact] = {
+        let contactStore = CNContactStore();
+        let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactPhoneNumbersKey,CNContactBirthdayKey];
+        var allContainers: [CNContainer] = [];
+        do {
+            allContainers = try contactStore.containers(matching: nil);
+        } catch {
+            print("Error fetching containers");
+        }
+        var results: [CNContact] = [];
+        for container in allContainers {
+            let fetchPredicate = CNContact.predicateForContactsInContainer(withIdentifier: container.identifier);
+            do {
+                let containerResults = try contactStore.unifiedContacts(matching: fetchPredicate, keysToFetch: keysToFetch as [CNKeyDescriptor]);
+                results.append(contentsOf: containerResults);
+            } catch {
+                print("Error fetching results for container");
+            }
+        }
+        return results;
+    }();
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -13,7 +13,6 @@
 		FAA8C30F1DF5CA9C005FD084 /* Reminder_Project.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAA8C30D1DF5CA9C005FD084 /* Reminder_Project.xcdatamodeld */; };
 		FAA8C3111DF5CA9C005FD084 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAA8C3101DF5CA9C005FD084 /* Assets.xcassets */; };
 		FAA8C3141DF5CA9C005FD084 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAA8C3121DF5CA9C005FD084 /* LaunchScreen.storyboard */; };
-		FAA8C3211DF5D2DF005FD084 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA8C31D1DF5D2DF005FD084 /* SettingsViewController.swift */; };
 		FAA8C3221DF5D2DF005FD084 /* RemindersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA8C31E1DF5D2DF005FD084 /* RemindersTableViewController.swift */; };
 		FAA8C3231DF5D2DF005FD084 /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA8C31F1DF5D2DF005FD084 /* ReminderViewController.swift */; };
 		FAA8C3241DF5D2DF005FD084 /* ReminderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA8C3201DF5D2DF005FD084 /* ReminderTableViewCell.swift */; };
@@ -28,7 +27,6 @@
 		FAA8C3101DF5CA9C005FD084 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAA8C3131DF5CA9C005FD084 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAA8C3151DF5CA9C005FD084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FAA8C31D1DF5D2DF005FD084 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		FAA8C31E1DF5D2DF005FD084 /* RemindersTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemindersTableViewController.swift; sourceTree = "<group>"; };
 		FAA8C31F1DF5D2DF005FD084 /* ReminderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
 		FAA8C3201DF5D2DF005FD084 /* ReminderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReminderTableViewCell.swift; sourceTree = "<group>"; };
@@ -71,7 +69,6 @@
 				FAA8C3121DF5CA9C005FD084 /* LaunchScreen.storyboard */,
 				FAA8C3151DF5CA9C005FD084 /* Info.plist */,
 				FAA8C30D1DF5CA9C005FD084 /* Reminder_Project.xcdatamodeld */,
-				FAA8C31D1DF5D2DF005FD084 /* SettingsViewController.swift */,
 				FAA8C31E1DF5D2DF005FD084 /* RemindersTableViewController.swift */,
 				FAA8C31F1DF5D2DF005FD084 /* ReminderViewController.swift */,
 				FAA8C3201DF5D2DF005FD084 /* ReminderTableViewCell.swift */,
@@ -156,7 +153,6 @@
 				FAA8C3231DF5D2DF005FD084 /* ReminderViewController.swift in Sources */,
 				FAA8C3091DF5CA9C005FD084 /* ViewController.swift in Sources */,
 				FAA8C3071DF5CA9C005FD084 /* AppDelegate.swift in Sources */,
-				FAA8C3211DF5D2DF005FD084 /* SettingsViewController.swift in Sources */,
 				FAA8C3241DF5D2DF005FD084 /* ReminderTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
