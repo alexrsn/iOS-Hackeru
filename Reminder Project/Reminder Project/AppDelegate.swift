@@ -72,10 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
     // MARK: - Notifications
     
     func setNotification(reminder: Reminder){
-        let interval = reminder.date!.timeIntervalSinceNow;
-        if interval <= 0 {
-            return;
-        }
         let content = UNMutableNotificationContent();
         content.title = reminder.title!;
         if reminder.note!.isEmpty{
@@ -84,9 +80,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
             content.body = reminder.note!;
         }
         content.sound = UNNotificationSound.default();
-        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: interval, repeats: false);
+        var trigger: UNCalendarNotificationTrigger;
+        switch reminder.rep {
+        case 1://Yearly
+            let triggerYearly = Calendar.current.dateComponents([.month,.day,.hour,.minute], from: reminder.date! as Date);
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerYearly, repeats: true);
+        case 2://Monthly
+            let triggerMonthly = Calendar.current.dateComponents([.day,.hour,.minute], from: reminder.date! as Date);
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerMonthly, repeats: true);
+        case 3://Weekly
+            let triggerWeekly = Calendar.current.dateComponents([.weekday,.hour,.minute], from: reminder.date! as Date);
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerWeekly, repeats: true);
+        case 4://Daily
+            let triggerDaily = Calendar.current.dateComponents([.hour,.minute], from: reminder.date! as Date);
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerDaily, repeats: true);
+        case 5://Hourly
+            let triggerHourly = Calendar.current.dateComponents([.minute], from: reminder.date! as Date);
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerHourly, repeats: true);
+        default:
+            let interval = reminder.date!.timeIntervalSinceNow;
+            if interval <= 0 {
+                return;
+            }
+            let triggerOnce = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second,], from: reminder.date! as Date);
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerOnce, repeats: false);
+        }
         let request = UNNotificationRequest(identifier:"\(reminder.title!)\(reminder.date)", content: content, trigger: trigger);
-        let trigger2 = UNCalendarNotificationTrigger.init(dateMatching: <#T##DateComponents#>, repeats: <#T##Bool#>)
         UNUserNotificationCenter.current().add(request){(error) in
             if (error != nil){
                 print(error!);

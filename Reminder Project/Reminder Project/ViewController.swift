@@ -60,15 +60,10 @@ class ViewController: UIViewController {
         let alertController = UIAlertController(title: "Import Birthdays", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert);
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil);
         let importAction = UIAlertAction(title: "Import", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
-            let year =  NSCalendar.current.component(Calendar.Component.year, from: Date());
             for contact in self.contacts{
                 if(contact.birthday != nil){
                     var birthday = contact.birthday!;
-                    birthday.year = year;
                     birthday.hour = 10;
-                    if(birthday.date!.timeIntervalSinceNow < 0){
-                        birthday.year! += 1;
-                    }
                     let reminder = Reminder(context: self.appDelegate.persistentContainer.viewContext);
                     reminder.title = "\(contact.givenName) \(contact.familyName) Birthday";
                     reminder.note = "Don't forget to wish a Happy Birthday!!!";
