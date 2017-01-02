@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
             if interval <= 0 {
                 return;
             }
-            let triggerOnce = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second,], from: reminder.date! as Date);
+            let triggerOnce = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: reminder.date! as Date);
             trigger = UNCalendarNotificationTrigger(dateMatching: triggerOnce, repeats: false);
         }
         let request = UNNotificationRequest(identifier:"\(reminder.title!)\(reminder.date)", content: content, trigger: trigger);
