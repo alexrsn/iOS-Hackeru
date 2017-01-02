@@ -86,6 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDe
         content.sound = UNNotificationSound.default();
         let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: interval, repeats: false);
         let request = UNNotificationRequest(identifier:"\(reminder.title!)\(reminder.date)", content: content, trigger: trigger);
+        let trigger2 = UNCalendarNotificationTrigger.init(dateMatching: <#T##DateComponents#>, repeats: <#T##Bool#>)
         UNUserNotificationCenter.current().add(request){(error) in
             if (error != nil){
                 print(error!);

@@ -62,9 +62,6 @@ class ViewController: UIViewController {
         let importAction = UIAlertAction(title: "Import", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
             let year =  NSCalendar.current.component(Calendar.Component.year, from: Date());
             for contact in self.contacts{
-                print(contact.givenName);
-                print(contact.familyName);
-                print(contact.phoneNumbers.first!.value.stringValue);
                 if(contact.birthday != nil){
                     var birthday = contact.birthday!;
                     birthday.year = year;
